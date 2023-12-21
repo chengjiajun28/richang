@@ -1,0 +1,58 @@
+2023-05-04 21:33:36,961 INFO: ------tornado start------
+2023-05-04 21:33:36,978 INFO: ------listen port: 8868------
+2023-05-04 21:33:58,188 INFO: remoteIp:127.0.0.1
+2023-05-04 21:33:58,191 INFO: request params: 1,33
+2023-05-04 21:33:58,192 INFO: ------gscq list------
+2023-05-04 21:34:13,367 INFO: ----request list end----
+2023-05-04 21:34:13,447 INFO: parse idList size: 20
+2023-05-04 21:34:13,449 INFO: ------gscq detail------,8526
+2023-05-04 21:34:14,401 INFO: ----request detail end----
+2023-05-04 21:34:15,479 INFO: ------gscq detail------,8525
+2023-05-04 21:34:15,742 INFO: ----request detail end----
+2023-05-04 21:34:16,829 INFO: ------gscq detail------,8517
+2023-05-04 21:34:17,816 INFO: ----request detail end----
+2023-05-04 21:34:18,871 INFO: ------gscq detail------,8516
+2023-05-04 21:34:19,830 INFO: ----request detail end----
+2023-05-04 21:34:20,965 INFO: ------gscq detail------,8504
+2023-05-04 21:34:21,956 INFO: ----request detail end----
+2023-05-04 21:34:23,052 INFO: ------gscq detail------,8486
+2023-05-04 21:34:29,590 INFO: ----request detail end----
+2023-05-04 21:34:30,707 INFO: ------gscq detail------,8328
+2023-05-04 21:34:31,191 INFO: ----request detail end----
+2023-05-04 21:34:32,275 INFO: ------gscq detail------,8318
+2023-05-04 21:34:32,827 INFO: ----request detail end----
+2023-05-04 21:34:33,919 INFO: ------gscq detail------,8294
+2023-05-04 21:34:34,482 INFO: ----request detail end----
+2023-05-04 21:34:35,569 INFO: ------gscq detail------,8288
+2023-05-04 21:34:36,106 INFO: ----request detail end----
+2023-05-04 21:34:37,216 INFO: ------gscq detail------,8276
+2023-05-04 21:34:38,147 INFO: ----request detail end----
+2023-05-04 21:34:39,230 INFO: ------gscq detail------,8256
+2023-05-04 21:34:39,716 INFO: ----request detail end----
+2023-05-04 21:34:40,808 INFO: ------gscq detail------,8254
+2023-05-04 21:34:42,948 INFO: ----request detail end----
+2023-05-04 21:34:44,012 INFO: ------gscq detail------,8242
+2023-05-04 21:34:44,255 INFO: ----request detail end----
+2023-05-04 21:34:45,333 INFO: ------gscq detail------,8236
+2023-05-04 21:34:46,317 INFO: ----request detail end----
+2023-05-04 21:34:47,405 INFO: ------gscq detail------,8234
+2023-05-04 21:34:47,985 INFO: ----request detail end----
+2023-05-04 21:34:49,065 INFO: ------gscq detail------,8231
+2023-05-04 21:34:52,078 INFO: ----request detail end----
+2023-05-04 21:34:53,133 INFO: ------gscq detail------,8228
+2023-05-04 21:34:53,585 INFO: ----request detail end----
+2023-05-04 21:34:54,677 INFO: ------gscq detail------,8227
+2023-05-04 21:34:56,449 INFO: ----request detail end----
+2023-05-04 21:34:57,529 INFO: ------gscq detail------,8226
+2023-05-04 21:34:57,955 INFO: ----request detail end----
+2023-05-04 21:34:59,085 INFO: 200 GET /gscq/list?current=1&subject=01 (127.0.0.1) 60899.40ms
+2023-05-04 21:34:59,091 INFO: remoteIp:127.0.0.1
+2023-05-04 21:34:59,267 INFO: caa123 获取位置信息成功
+2023-05-04 21:34:59,274 INFO: request url:https://paimai.caa123.org.cn/wt-web-ws/ws/0.1/lots?count=20&sortname=&sortorder=&name=&status=0&attribute=&attributeArray=&province=&city=&priceStart=&priceEnd=&isRestricted=&canLoan=&secondaryType=&term=&startTimeStamp=&endTimeStamp=&insuranceSupport=&start=0&standardType=5&time=1683207299274&_=1683207299274
+2023-05-04 21:34:59,277 INFO: ------caa123 list------
+2023-05-04 21:35:23,274 INFO: 200 GET /caa123/list?current=1&subject=01 (127.0.0.1) 24184.42ms
+2023-05-04 21:35:23,692 WARNING: 404 GET /favicon.ico (127.0.0.1) 0.99ms
+2023-05-04 21:35:55,547 INFO: remoteIp:127.0.0.1
+2023-05-04 21:35:55,549 INFO: request url:https://paimai.caa123.org.cn/wt-web-ws/ws/0.1/lots?count=20&sortname=&sortorder=&name=&status=0&attribute=&attributeArray=&province=&city=&priceStart=&priceEnd=&isRestricted=&canLoan=&secondaryType=&term=&startTimeStamp=&endTimeStamp=&insuranceSupport=&start=0&standardType=20&time=1683207355549&_=1683207355549
+2023-05-04 21:35:55,552 INFO: ------caa123 list------
+2023-05-04 21:36:19,294 INFO: 200 GET /caa123/list?current=1&subject=02 (127.0.0.1) 23746.75ms

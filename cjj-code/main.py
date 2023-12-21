@@ -1,0 +1,1 @@
+class CJJ(B)

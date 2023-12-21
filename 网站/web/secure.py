@@ -1,0 +1,5 @@
+DEBUG = True
+
+SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:111111@127.0.0.1:3306/fisher"
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+

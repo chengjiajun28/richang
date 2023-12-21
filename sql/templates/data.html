@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{#<style>#}
+{#    .details {#}
+{#        display: none;#}
+{#    }#}
+{#</style>#}
+
+{#<script>#}
+{#    function toggleDetails(element) {#}
+{#        var details = element.nextElementSibling;#}
+{#        if (details.style.display === 'none') {#}
+{#            details.style.display = 'table-row';#}
+{#        } else {#}
+{#            details.style.display = 'none';#}
+{#        }#}
+{#    }#}
+{#</script>#}
+
+<table>
+    <tr>
+        <th>域名</th>
+        <th>前天</th>
+        <th>昨天</th>
+        <th>今天</th>
+    </tr>
+    {% for row in data %}
+
+        <tr onclick="toggleDetails(this)">
+            <td class="show-details">{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+        </tr>
+        {#        <tr class="details">#}
+        {#            {% if row[1] != 0 %}#}
+        {#                {% for a in row[2].split(',') %}#}
+        {#                    <td colspan="2">{{ a }} \n</td>#}
+        {#                {% endfor %}#}
+        {#            {% endif %}#}
+        {#        </tr>#}
+    {% endfor %}
+</table>
+
+
+</body>
+</html>

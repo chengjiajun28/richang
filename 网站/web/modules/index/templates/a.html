@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据列表</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h1>数据列表</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>中文名</th>
+            <th>域名</th>
+            <th>状态</th>
+            <th>是否启动筛选词</th>
+            <th>筛选词</th>
+            <th>是否启动关键词</th>
+            <th>关键词(3个)</th>
+            <th>官网</th>
+            <th>分类</th>
+            <th>省份</th>
+            <th>备注</th>
+            <th>参考数据</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in data %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item['中文名'] }}</td>
+            <td>{{ item['域名'] }}</td>
+            <td>{{ item['状态'] }}</td>
+            <td>{{ item['是否启动筛选词'] }}</td>
+            <td>{{ item['筛选词'] }}</td>
+            <td>{{ item['是否启动关键词'] }}</td>
+            <td>{{ item['关键词(3个)'] }}</td>
+            <td>{{ item['官网'] }}</td>
+            <td>{{ item['分类'] }}</td>
+            <td>{{ item['省份'] }}</td>
+            <td>{{ item['备注'] }}</td>
+            <td>{{ item['参考数据'] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

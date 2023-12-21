@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>data</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="container mt-4">
+    <form id="myForm">
+        <label for="mySelect">请选择一个分类：</label>
+        <select id="mySelect">
+            <option value="">请选择</option>
+            {% for class_name in class_info %}
+                <option value="{{ class_name }}">{{ class_name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="提交">
+    </form>
+    <div id="result"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#myForm').submit(function (event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+
+            var selectedClass = $('#mySelect').val();
+
+            if (selectedClass) {
+                $.ajax({
+                    url: '/selected_option',
+                    type: 'POST',
+                    data: {
+                        mySelect: selectedClass
+                    },
+                    success: function (response) {
+                        // 根据返回的学生信息生成表单
+                        var studentForm = '<form id="studentInfo">';
+                        studentForm += '<table border="1">';
+                        studentForm += '<tr><th>name</th></tr>';
+
+                        for (var i = 0; i < response.students.length; i++) {
+                            studentForm += '<tr><td>' + response.students[i] + '</td></tr>';
+                        }
+
+                        studentForm += '</table>';
+                        studentForm += '</form>';
+
+                        $('#result').html(studentForm);
+                    },
+                    error: function () {
+                        alert('请求出错，请稍后重试。');
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

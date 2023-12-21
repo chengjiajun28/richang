@@ -1,0 +1,265 @@
+2023-04-04 00:29:40,803 INFO: ------tornado start------
+2023-04-04 00:29:40,817 INFO: ------listen port: 8868------
+2023-04-04 00:29:50,678 INFO: remoteIp:127.0.0.1
+2023-04-04 00:29:50,680 INFO: request params: 1,projectID=3&type=7&priceID=9
+2023-04-04 00:29:50,681 INFO: ------cquae list------
+2023-04-04 00:29:51,684 INFO: ----request list end----
+2023-04-04 00:29:51,770 INFO: parse idList size: 10
+2023-04-04 00:29:51,771 INFO: ------cquae detail------,1210661
+2023-04-04 00:29:52,591 INFO: ----request detail end----
+2023-04-04 00:29:53,662 INFO: ------cquae detail------,1210660
+2023-04-04 00:29:54,407 INFO: ----request detail end----ssss
+2023-04-04 00:29:55,487 INFO: ------cquae detail------,1210659
+2023-04-04 00:29:56,283 INFO: ----request detail end----
+2023-04-04 00:29:57,342 INFO: ------cquae detail------,1210658
+2023-04-04 00:29:58,297 INFO: ----request detail end----
+2023-04-04 00:29:59,366 INFO: ------cquae detail------,1210657
+2023-04-04 00:30:00,142 INFO: ----request detail end----
+2023-04-04 00:30:01,212 INFO: ------cquae detail------,1210656
+2023-04-04 00:30:01,751 INFO: ----request detail end----
+2023-04-04 00:30:02,806 INFO: ------cquae detail------,1210655
+2023-04-04 00:30:03,490 INFO: ----request detail end----
+2023-04-04 00:30:04,573 INFO: ------cquae detail------,1210654
+2023-04-04 00:30:05,187 INFO: ----request detail end----
+2023-04-04 00:30:06,229 INFO: ------cquae detail------,1210653
+2023-04-04 00:30:06,714 INFO: ----request detail end----
+2023-04-04 00:30:07,757 INFO: ------cquae detail------,1210652
+2023-04-04 00:30:08,542 INFO: ----request detail end----
+2023-04-04 00:30:09,658 INFO: 200 GET /cquae/list?current=1&subject=01 (127.0.0.1) 18980.69ms
+2023-04-04 00:30:09,813 WARNING: 404 GET /favicon.ico (127.0.0.1) 1.00ms
+2023-04-04 00:34:52,517 INFO: ------tornado start------
+2023-04-04 00:34:52,522 INFO: ------listen port: 8868------
+2023-04-04 00:34:56,685 INFO: remoteIp:127.0.0.1
+2023-04-04 00:34:56,685 INFO: request params: 1,projectID=3&type=7&priceID=9
+2023-04-04 00:34:56,699 INFO: ------cquae list------
+2023-04-04 00:34:58,071 INFO: ----request list end----
+2023-04-04 00:34:58,162 INFO: parse idList size: 10
+2023-04-04 00:34:58,164 INFO: ------cquae detail------,1210661
+2023-04-04 00:34:59,013 INFO: ----request detail end----
+2023-04-04 00:35:00,088 INFO: ------cquae detail------,1210660
+2023-04-04 00:35:00,881 INFO: ----request detail end----
+2023-04-04 00:35:01,964 INFO: ------cquae detail------,1210659
+2023-04-04 00:35:02,768 INFO: ----request detail end----
+2023-04-04 00:35:03,866 INFO: ------cquae detail------,1210658
+2023-04-04 00:35:04,700 INFO: ----request detail end----
+2023-04-04 00:35:05,763 INFO: ------cquae detail------,1210657
+2023-04-04 00:35:06,424 INFO: ----request detail end----
+2023-04-04 00:35:07,483 INFO: ------cquae detail------,1210656
+2023-04-04 00:35:08,419 INFO: ----request detail end----
+2023-04-04 00:35:09,486 INFO: ------cquae detail------,1210655
+2023-04-04 00:35:10,190 INFO: ----request detail end----
+2023-04-04 00:35:11,260 INFO: ------cquae detail------,1210654
+2023-04-04 00:35:12,077 INFO: ----request detail end----
+2023-04-04 00:35:13,135 INFO: ------cquae detail------,1210653
+2023-04-04 00:35:13,794 INFO: ----request detail end----
+2023-04-04 00:35:14,851 INFO: ------cquae detail------,1210652
+2023-04-04 00:35:15,565 INFO: ----request detail end----
+2023-04-04 00:35:16,728 INFO: 200 GET /cquae/list?current=1&subject=01 (127.0.0.1) 20042.81ms
+2023-04-04 00:35:36,461 INFO: remoteIp:127.0.0.1
+2023-04-04 00:35:36,462 INFO: request params: 5,projectID=3&type=7&priceID=9
+2023-04-04 00:35:36,462 INFO: ------cquae list------
+2023-04-04 00:35:37,522 INFO: ----request list end----
+2023-04-04 00:35:37,616 INFO: parse idList size: 10
+2023-04-04 00:35:37,617 INFO: ------cquae detail------,1212243
+2023-04-04 00:35:39,259 INFO: ----request detail end----
+2023-04-04 00:35:40,357 INFO: ------cquae detail------,1212222
+2023-04-04 00:35:41,051 INFO: ----request detail end----
+2023-04-04 00:35:42,150 INFO: ------cquae detail------,1212221
+2023-04-04 00:35:42,840 INFO: ----request detail end----
+2023-04-04 00:35:43,911 INFO: ------cquae detail------,1212220
+2023-04-04 00:35:44,676 INFO: ----request detail end----
+2023-04-04 00:35:45,731 INFO: ------cquae detail------,1212219
+2023-04-04 00:35:46,616 INFO: ----request detail end----
+2023-04-04 00:35:47,675 INFO: ------cquae detail------,1212218
+2023-04-04 00:35:48,493 INFO: ----request detail end----
+2023-04-04 00:35:49,650 INFO: ------cquae detail------,1212217
+2023-04-04 00:35:50,475 INFO: ----request detail end----
+2023-04-04 00:35:51,593 INFO: ------cquae detail------,1212216
+2023-04-04 00:35:52,387 INFO: ----request detail end----
+2023-04-04 00:35:53,449 INFO: ------cquae detail------,1212215
+2023-04-04 00:35:54,255 INFO: ----request detail end----
+2023-04-04 00:35:55,362 INFO: ------cquae detail------,1212214
+2023-04-04 00:35:56,001 INFO: ----request detail end----
+2023-04-04 00:35:57,121 INFO: 200 GET /cquae/list?current=5&subject=01 (127.0.0.1) 20660.77ms
+2023-04-04 00:36:59,678 INFO: remoteIp:127.0.0.1
+2023-04-04 00:36:59,680 INFO: request params: 1,projectID=3&type=8&priceID=8
+2023-04-04 00:36:59,680 INFO: ------cquae list------
+2023-04-04 00:37:00,439 INFO: ----request list end----
+2023-04-04 00:37:00,522 INFO: parse idList size: 10
+2023-04-04 00:37:00,522 INFO: ------cquae detail------,1212606
+2023-04-04 00:37:01,314 INFO: ----request detail end----
+2023-04-04 00:37:02,380 INFO: ------cquae detail------,1212635
+2023-04-04 00:37:03,251 INFO: ----request detail end----
+2023-04-04 00:37:04,305 INFO: ------cquae detail------,1212633
+2023-04-04 00:37:05,113 INFO: ----request detail end----
+2023-04-04 00:37:06,149 INFO: ------cquae detail------,1212632
+2023-04-04 00:37:06,841 INFO: ----request detail end----
+2023-04-04 00:37:07,895 INFO: ------cquae detail------,1212631
+2023-04-04 00:37:08,884 INFO: ----request detail end----
+2023-04-04 00:37:09,947 INFO: ------cquae detail------,1212630
+2023-04-04 00:37:10,654 INFO: ----request detail end----
+2023-04-04 00:37:11,714 INFO: ------cquae detail------,1212629
+2023-04-04 00:37:12,489 INFO: ----request detail end----
+2023-04-04 00:37:13,597 INFO: ------cquae detail------,1212628
+2023-04-04 00:37:14,383 INFO: ----request detail end----
+2023-04-04 00:37:15,443 INFO: ------cquae detail------,1212627
+2023-04-04 00:37:16,305 INFO: ----request detail end----
+2023-04-04 00:37:17,408 INFO: ------cquae detail------,1212626
+2023-04-04 00:37:18,191 INFO: ----request detail end----
+2023-04-04 00:37:19,294 INFO: 200 GET /cquae/list?current=1&subject=02 (127.0.0.1) 19615.58ms
+2023-04-04 18:15:05,766 INFO: ------tornado start------
+2023-04-04 18:15:05,819 INFO: ------listen port: 8868------
+2023-04-04 18:15:17,651 INFO: remoteIp:127.0.0.1
+2023-04-04 18:15:17,653 INFO: request params: 1,12
+2023-04-04 18:15:17,654 INFO: ------chanjs list------
+2023-04-04 18:15:24,652 INFO: ----request list end----
+2023-04-04 18:15:24,702 INFO: parse idList size: 12
+2023-04-04 18:15:24,703 INFO: ------chanjs detail------,Z0000e62a53
+2023-04-04 18:15:27,123 ERROR: Uncaught exception GET /chanjs/list?current=1&subject=01 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='127.0.0.1:8868', method='GET', uri='/chanjs/list?current=1&subject=01', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\site-packages\tornado\web.py", line 1711, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "C:\Users\12081\Desktop\py\ruseinfo\tornadoapi.py", line 179, in get
+    queryResp = chanjs.queryList(current,subject)
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 46, in queryList
+    otherDetail = queryDetail(detail['id'], True)
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 81, in queryDetail
+    resp = urlopen(req, context=context)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+2023-04-04 18:15:27,164 ERROR: 500 GET /chanjs/list?current=1&subject=01 (127.0.0.1) 9514.80ms
+2023-04-04 18:15:27,422 WARNING: 404 GET /favicon.ico (127.0.0.1) 0.00ms
+2023-04-04 18:18:51,339 INFO: ------tornado start------
+2023-04-04 18:18:51,360 INFO: ------listen port: 8868------
+2023-04-04 18:18:53,221 INFO: remoteIp:127.0.0.1
+2023-04-04 18:18:53,221 INFO: request params: 1,12
+2023-04-04 18:18:53,221 INFO: ------chanjs list------
+2023-04-04 18:18:59,630 INFO: ----request list end----
+2023-04-04 18:18:59,676 INFO: parse idList size: 12
+2023-04-04 18:18:59,677 INFO: ------chanjs detail------,Z0000e62a53
+2023-04-04 18:19:02,054 ERROR: Uncaught exception GET /chanjs/list?current=1&subject=01 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='127.0.0.1:8868', method='GET', uri='/chanjs/list?current=1&subject=01', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\site-packages\tornado\web.py", line 1711, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "C:\Users\12081\Desktop\py\ruseinfo\tornadoapi.py", line 179, in get
+    queryResp = chanjs.queryList(current,subject)
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 46, in queryList
+    otherDetail = queryDetail(detail['id'], True)
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 85, in queryDetail
+    htmls = resp.read().decode('utf-8')
+UnboundLocalError: local variable 'resp' referenced before assignment
+2023-04-04 18:19:02,060 ERROR: 500 GET /chanjs/list?current=1&subject=01 (127.0.0.1) 8838.45ms
+2023-04-04 18:19:36,149 INFO: ------tornado start------
+2023-04-04 18:19:36,159 INFO: ------listen port: 8868------
+2023-04-04 18:19:37,506 INFO: remoteIp:127.0.0.1
+2023-04-04 18:19:37,507 INFO: request params: 1,12
+2023-04-04 18:19:37,508 INFO: ------chanjs list------
+2023-04-04 18:19:43,701 INFO: ----request list end----
+2023-04-04 18:19:43,763 INFO: parse idList size: 12
+2023-04-04 18:19:43,765 INFO: ------chanjs detail------,Z0000e62a53
+2023-04-04 18:19:46,110 ERROR: Uncaught exception GET /chanjs/list?current=1&subject=01 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='127.0.0.1:8868', method='GET', uri='/chanjs/list?current=1&subject=01', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 82, in queryDetail
+    resp = urlopen(req, context=context)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 525, in open
+    response = meth(req, response)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 634, in http_response
+    response = self.parent.error(
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 563, in error
+    return self._call_chain(*args)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\urllib\request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\site-packages\tornado\web.py", line 1711, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "C:\Users\12081\Desktop\py\ruseinfo\tornadoapi.py", line 179, in get
+    queryResp = chanjs.queryList(current,subject)
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 46, in queryList
+    otherDetail = queryDetail(detail['id'], True)
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 84, in queryDetail
+    print("----"+e)
+TypeError: can only concatenate str (not "HTTPError") to str
+2023-04-04 18:19:46,129 ERROR: 500 GET /chanjs/list?current=1&subject=01 (127.0.0.1) 8624.02ms
+2023-04-04 18:22:42,795 INFO: ------tornado start------
+2023-04-04 18:22:42,804 INFO: ------listen port: 8868------
+2023-04-04 18:22:44,373 INFO: remoteIp:127.0.0.1
+2023-04-04 18:22:44,373 INFO: request params: 1,12
+2023-04-04 18:22:44,379 INFO: ------chanjs list------
+2023-04-04 18:22:59,463 INFO: ----request list end----
+2023-04-04 18:22:59,518 INFO: parse idList size: 12
+2023-04-04 18:22:59,519 INFO: ------chanjs detail------,Z0000e62a53
+2023-04-04 18:23:01,883 ERROR: Uncaught exception GET /chanjs/list?current=1&subject=01 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='127.0.0.1:8868', method='GET', uri='/chanjs/list?current=1&subject=01', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "C:\Users\12081\AppData\Local\Programs\Python\Python310\lib\site-packages\tornado\web.py", line 1711, in _execute
+    result = method(*self.path_args, **self.path_kwargs)
+  File "C:\Users\12081\Desktop\py\ruseinfo\tornadoapi.py", line 179, in get
+    queryResp = chanjs.queryList(current,subject)
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 46, in queryList
+    otherDetail = queryDetail(detail['id'], True)
+  File "C:\Users\12081\Desktop\py\ruseinfo\auction\chanjs.py", line 85, in queryDetail
+    htmls = resp.read().decode('utf-8')
+UnboundLocalError: local variable 'resp' referenced before assignment
+2023-04-04 18:23:01,893 ERROR: 500 GET /chanjs/list?current=1&subject=01 (127.0.0.1) 17519.70ms
+2023-04-04 18:25:41,867 INFO: ------tornado start------
+2023-04-04 18:25:41,885 INFO: ------listen port: 8868------
+2023-04-04 18:25:43,879 INFO: remoteIp:127.0.0.1
+2023-04-04 18:25:43,881 INFO: request params: 1,12
+2023-04-04 18:25:43,882 INFO: ------chanjs list------
+2023-04-04 18:25:51,883 INFO: ----request list end----
+2023-04-04 18:25:51,931 INFO: parse idList size: 12
+2023-04-04 18:25:51,933 INFO: ------chanjs detail------,Z0000e62a53
+2023-04-04 18:25:52,120 INFO: chanjs detail 404, id:Z0000e62a53
+2023-04-04 18:25:52,122 INFO: ------chanjs detail------,86ed7210ec
+2023-04-04 18:25:52,356 INFO: ----request detail end----
+2023-04-04 18:25:53,472 INFO: ------chanjs detail------,820319ec76
+2023-04-04 18:25:53,662 INFO: ----request detail end----
+2023-04-04 18:25:54,727 INFO: ------chanjs detail------,86b5d56ff3
+2023-04-04 18:25:55,027 INFO: ----request detail end----
+2023-04-04 18:25:56,065 INFO: ------chanjs detail------,Z0000471a53
+2023-04-04 18:25:56,292 INFO: ----request detail end----
+2023-04-04 18:25:57,335 INFO: ------chanjs detail------,83ac28390c
+2023-04-04 18:25:57,601 INFO: ----request detail end----
+2023-04-04 18:25:58,663 INFO: ------chanjs detail------,Z0000061a53
+2023-04-04 18:25:58,901 INFO: ----request detail end----
+2023-04-04 18:25:59,971 INFO: ------chanjs detail------,8602471879
+2023-04-04 18:26:00,224 INFO: ----request detail end----
+2023-04-04 18:26:01,283 INFO: ------chanjs detail------,8cb2cdee9c
+2023-04-04 18:26:01,578 INFO: ----request detail end----
+2023-04-04 18:26:02,691 INFO: ------chanjs detail------,Z0000241a53
+2023-04-04 18:26:02,948 INFO: ----request detail end----
+2023-04-04 18:26:04,045 INFO: ------chanjs detail------,88a04c8133
+2023-04-04 18:26:04,292 INFO: ----request detail end----
+2023-04-04 18:26:05,395 INFO: ------chanjs detail------,8149c6b376
+2023-04-04 18:26:05,614 INFO: ----request detail end----
+2023-04-04 18:26:08,885 INFO: 200 GET /chanjs/list?current=1&subject=01 (127.0.0.1) 25007.41ms
+2023-04-04 18:38:22,889 INFO: ------tornado start------
+2023-04-04 18:38:22,899 INFO: ------listen port: 8868------
+2023-04-04 18:39:24,182 INFO: ------tornado start------
+2023-04-04 18:39:24,204 INFO: ------listen port: 8868------
+2023-04-04 18:40:40,590 INFO: ------tornado start------
+2023-04-04 18:40:40,605 INFO: ------listen port: 8868------
+2023-04-04 19:00:57,703 INFO: ------tornado start------
+2023-04-04 19:00:57,715 INFO: ------listen port: 8868------

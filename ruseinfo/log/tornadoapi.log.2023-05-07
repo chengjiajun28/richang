@@ -1,0 +1,69 @@
+2023-05-07 12:34:29,614 INFO: ------tornado start------
+2023-05-07 12:34:29,647 INFO: ------listen port: 8868------
+2023-05-07 12:35:00,650 INFO: remoteIp:127.0.0.1
+2023-05-07 12:35:00,654 INFO: request params: 1,4
+2023-05-07 12:35:00,656 INFO: ------qzcq list------
+2023-05-07 12:35:01,789 INFO: ----request list end----
+2023-05-07 12:35:01,907 INFO: parse idList size: 30
+2023-05-07 12:35:01,909 INFO: ------qzcq detail------,17815
+2023-05-07 12:35:02,375 INFO: ----request detail end----
+2023-05-07 12:35:04,584 INFO: ------qzcq detail------,17764
+2023-05-07 12:35:05,078 INFO: ----request detail end----
+2023-05-07 12:35:07,223 INFO: ------qzcq detail------,17754
+2023-05-07 12:35:07,693 INFO: ----request detail end----
+2023-05-07 12:35:09,784 INFO: ------qzcq detail------,17619
+2023-05-07 12:35:10,256 INFO: ----request detail end----
+2023-05-07 12:35:12,343 INFO: ------qzcq detail------,17454
+2023-05-07 12:35:12,763 INFO: ----request detail end----
+2023-05-07 12:35:14,891 INFO: ------qzcq detail------,17443
+2023-05-07 12:35:15,343 INFO: ----request detail end----
+2023-05-07 12:35:17,400 INFO: ------qzcq detail------,17390
+2023-05-07 12:35:17,857 INFO: ----request detail end----
+2023-05-07 12:35:19,937 INFO: ------qzcq detail------,17371
+2023-05-07 12:35:20,418 INFO: ----request detail end----
+2023-05-07 12:35:22,622 INFO: ------qzcq detail------,17352
+2023-05-07 12:35:23,029 INFO: ----request detail end----
+2023-05-07 12:35:25,059 INFO: ------qzcq detail------,17351
+2023-05-07 12:35:25,492 INFO: ----request detail end----
+2023-05-07 12:35:27,595 INFO: ------qzcq detail------,17348
+2023-05-07 12:35:28,055 INFO: ----request detail end----
+2023-05-07 12:35:30,141 INFO: ------qzcq detail------,17347
+2023-05-07 12:35:30,595 INFO: ----request detail end----
+2023-05-07 12:35:32,681 INFO: ------qzcq detail------,17346
+2023-05-07 12:35:33,093 INFO: ----request detail end----
+2023-05-07 12:35:35,199 INFO: ------qzcq detail------,17341
+2023-05-07 12:35:35,650 INFO: ----request detail end----
+2023-05-07 12:35:37,765 INFO: ------qzcq detail------,17324
+2023-05-07 12:35:38,170 INFO: ----request detail end----
+2023-05-07 12:35:40,186 INFO: ------qzcq detail------,17290
+2023-05-07 12:35:40,656 INFO: ----request detail end----
+2023-05-07 12:35:42,705 INFO: ------qzcq detail------,17289
+2023-05-07 12:35:43,162 INFO: ----request detail end----
+2023-05-07 12:35:45,307 INFO: ------qzcq detail------,17288
+2023-05-07 12:35:45,710 INFO: ----request detail end----
+2023-05-07 12:35:47,840 INFO: ------qzcq detail------,17239
+2023-05-07 12:35:48,348 INFO: ----request detail end----
+2023-05-07 12:35:51,152 INFO: ------qzcq detail------,17235
+2023-05-07 12:35:51,636 INFO: ----request detail end----
+2023-05-07 12:35:53,876 INFO: ------qzcq detail------,17234
+2023-05-07 12:35:54,375 INFO: ----request detail end----
+2023-05-07 12:35:56,594 INFO: ------qzcq detail------,17198
+2023-05-07 12:35:57,058 INFO: ----request detail end----
+2023-05-07 12:35:59,277 INFO: ------qzcq detail------,17197
+2023-05-07 12:35:59,692 INFO: ----request detail end----
+2023-05-07 12:36:01,891 INFO: ------qzcq detail------,17161
+2023-05-07 12:36:02,416 INFO: ----request detail end----
+2023-05-07 12:36:04,575 INFO: ------qzcq detail------,17105
+2023-05-07 12:36:04,993 INFO: ----request detail end----
+2023-05-07 12:36:07,130 INFO: ------qzcq detail------,17104
+2023-05-07 12:36:07,548 INFO: ----request detail end----
+2023-05-07 12:36:09,646 INFO: ------qzcq detail------,17054
+2023-05-07 12:36:10,095 INFO: ----request detail end----
+2023-05-07 12:36:12,201 INFO: ------qzcq detail------,16991
+2023-05-07 12:36:12,630 INFO: ----request detail end----
+2023-05-07 12:36:14,649 INFO: ------qzcq detail------,16952
+2023-05-07 12:36:15,088 INFO: ----request detail end----
+2023-05-07 12:36:17,152 INFO: ------qzcq detail------,16907
+2023-05-07 12:36:17,610 INFO: ----request detail end----
+2023-05-07 12:36:19,774 INFO: 200 GET /qzcq/list?current=1&subject=02 (127.0.0.1) 79125.87ms
+2023-05-07 12:36:20,386 WARNING: 404 GET /favicon.ico (127.0.0.1) 1.00ms
