@@ -18,19 +18,16 @@ class Wk(BaseCrawler):
     # 请求列表
     def data_list(self, *args, **kwargs):
         url = kwargs.get("url")
-        cookies = kwargs.get("cookies")
 
-        # 处理登录
-        page = self.get_page_obj(url=url, cookies=cookies)
+        page = self.get_page_user_obj(url=url, )
 
         return page
 
     # 请求详情页
     def data_details(self, *args, **kwargs):
         url = kwargs.get("url")
-        cookies = kwargs.get("cookies")
 
-        page = self.get_page_obj(url=url, cookies=cookies)
+        page = self.get_page_obj(url=url, )
 
         return page
 
@@ -63,16 +60,12 @@ class Wk(BaseCrawler):
 
             page.ele('x:/html/body/div[3]/div[4]/a[last()]').click()
 
-        page.quit()
-
-        return url_datas
+        return page,url_datas
 
     # 解析详情页
-    def parse_data_details(self, url, cookies):
+    def parse_data_details(self, page, url):
 
-        page = self.data_details(url=url, cookies=cookies)
-
-        time.sleep(5)
+        page = page.new_tab(url=url)
 
         time.sleep(5)
 
@@ -107,61 +100,35 @@ class Wk(BaseCrawler):
             pass
 
         finally:
-            page.quit()
+            page.close()
+
+            self.cache_mysql_datas(self.website, data)
 
             self.ruku_data.append(data)
 
-    def get_cookie(self, *args, **kwargs):
-        url = kwargs.get("url")
-
-        page = self.get_page_obj(url=url)
-
-        user_name = "17168360408"
-        pwd = "040828cjj"
-
-        page.ele('x://*[@id="fm-login-id"]').input(user_name)
-        page.ele('x://*[@id="fm-login-password"]').input(pwd)
-
-        time.sleep(5)
-
-        page.ele('x://*[@id="login-form"]/div[4]/button').click()
-
-        time.sleep(20)
-
-        cookies = page.get_cookies()
-
-        page.quit()
-
-        return cookies
-
     def action(self, *args, **kwargs):
+        global page
+
         minpage = 0
-        maxpage = 2  # 写死20
+        maxpage = 100  # 写死20
 
         logtool.info("开始爬取")
         logtool.info("进入网页")
-
-        urls = [
-            "https://login.taobao.com/member/login.jhtml?f=top&redirectURL=https%3A%2F%2Fzc-paimai.taobao.com%2Fwow%2Fpm%2Fdefault%2Fpc%2Fzichansearch%3Fpmid%3D0144569595_1685414424109%26pmtk%3D20140647.0.0.0.27064540.puimod-pc-search-navbar_5143927030.vault-jump%26path%3D27064540%2C27181431%26fcatV4Ids%3D%5B%2522206051702%2522%5D%26page%3D1%26spm%3Da2129.27181431.puimod-zc-focus-2021_2860107850.category-4-1%26scm%3D20140647.julang.360_search.brand",
-        ]
 
         list_urls = [
             'https://sf.taobao.com/list/0__1.htm?spm=a213w.7398504.filter.1.2bc04fa7ZKgR9u&auction_source=0&st_param=-1&auction_start_seg=-1'
         ]
 
-        # 处理登录
-        cookies = self.get_cookie(url=urls[0])
-
         # 处理详情页链接
         datas_urls = []
         for url in list_urls:
             # 请求列表页,
-            page = self.data_list(url=url, cookies=cookies)
+            page = self.data_list(url=url)
 
             time.sleep(3)
 
             # 解析列表页
-            url_datas = self.parse_data_list(page_num=maxpage, page=page, )
+            page, url_datas = self.parse_data_list(page_num=maxpage, page=page, )
 
             for i in url_datas:
                 datas_urls.append(i)
@@ -175,10 +142,10 @@ class Wk(BaseCrawler):
         # 循环列表
         for _, url in enumerate(datas_urls):
             # 解析详情页
-            t = threading.Thread(target=self.parse_data_details, args=(url, cookies,))
+            t = threading.Thread(target=self.parse_data_details, args=(page, url))
             t.start()
 
-            time.sleep(3)
+            time.sleep(5)
 
             print(f"第{_}条完成！！！")
 

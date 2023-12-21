@@ -1,51 +1,446 @@
+import json
+import os
+import sys
+
+# 将文件的上级目录添加到sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import re
+import time
+from datetime import datetime, timedelta
+import jionlp
+import pandas as pd
 import pymysql
 
+from ruseinfo.auction import logtool
+from ruseinfo.auction.Auction import Auction_Detials, Auction_Info
+from ruseinfo.auction.BaseCrawler import BaseCrawler
+from ruseinfo.auction.handle_details import handle
+from ruseinfo.tools import str_to_y_m_d_H_M_S
+
+
+class Wk(BaseCrawler):
+    def __init__(self):
+        super().__init__()
+
+    # 请求列表
+    def data_list(self, *args, **kwargs):
+        pass
+
+    # 请求详情页
+    def data_details(self, *args, **kwargs):
+        pass
+
+    def get_total_page(self, *args, **kwargs):
+        pass
+
+    # 解析列表
+    def parse_data_list(self, *args, **kwargs):
+        global a, diqu
+
+        row = kwargs.get("row")
+        website_data = kwargs.get("website_data")
+
+        # 网站原始id
+        # origin_id: str
+        origin_id = None
+        origin_id = str(time.time())
+
+        # 拍卖标的ID
+        # auction_id: str
+        auction_id = None
+        auction_id = f"{self.website}_{origin_id}"
+
+        # 拍卖公告名称
+        # assets_name: str
+        assets_name = None
+        try:
+
+            assets_name = row["详情页标题"].replace(" ", "").replace("\n", "").replace("\t", "").replace("\r", "")
+
+        except Exception as e:
+            auction_info = 0
+
+            return auction_info
+
+        # 处理时间
+        announcement_start_time = None
+        announcement_end_time = None
+
+        # 第一种时间情况
+        try:
+
+            time_one = jionlp.parse_time(row['起止日期'])
+
+            # 报名开始时间
+            # announcement_start_time: str
+            announcement_start_time = str_to_y_m_d_H_M_S(time_one['time'][0])
+
+            # 报名截止时间
+            # announcement_end_time: str
+            announcement_end_time = str_to_y_m_d_H_M_S(time_one['time'][1])
+
+        except Exception as e:
+            pass
+
+        # 第二种时间情况
+        try:
+
+            try:
+                # 报名开始时间
+
+                time_one = jionlp.parse_time(row['开始时间'])
+                announcement_start_time = str_to_y_m_d_H_M_S(time_one['time'][0])
+            except Exception as e:
+                # 获取当前时间
+                now = datetime.now()
+
+                # 将时间格式化为字符串
+                formatted_now = now.strftime("%Y-%m-%d %H:%M:%S")
+
+                announcement_start_time = str_to_y_m_d_H_M_S(formatted_now)
+
+            # 报名截止时间
+
+            time_one = jionlp.parse_time(row['结束时间'])
+            announcement_end_time = str_to_y_m_d_H_M_S(time_one['time'][1])
+
+        except Exception:
+            # 获取当前时间
+            now = datetime.strptime(announcement_start_time, "%Y-%m-%d %H:%M:%S")
+
+            # 将时间加上 30 天
+            end_time = (now + timedelta(days=30)).strftime("%Y-%m-%d %H:%M:%S")
+
+            announcement_end_time = str_to_y_m_d_H_M_S(end_time)
+
+        # 状态
+        # state: str
+        state = ""
+        try:
+            state = row["状态"]
+        except Exception as e:
+            state = ""
+
+        # 保证金
+        deposit = ""
+        try:
+            string = row['保证金'].replace(" ", "").replace("\n", "").replace("\t", "").replace("\r", "").split('.')[0]
+
+            deposit = jionlp.parse_money(string)["num"]
+
+        except Exception as e:
+            deposit = ""
+            # print('保证金出错！！！')
+
+        # 图片url
+        # img_url: str
+        img_url = None
+        try:
+            img_url = row["图片网址"]
+        except Exception as e:
+            img_url = ""
+            # print("图片网址出错！！！")
+
+        if len(img_url) > 255:
+            img_url = ""
+
+        # imgPaths前缀
+        # img_prefix: str
+
+        # 图片路径，多个分隔
+        # img_paths: str
+        img_paths = img_url
+
+        for field_name in row:
+
+            if "详情页图片" in field_name:
+                img_paths += row[field_name] + ";"
+
+        # 省份
+        # province: str
+        province = None
+
+        # 城市
+        # city: str
+        city = None
+
+        # 县
+        # county: str
+        county = None
+
+        try:
+            diqu = jionlp.parse_location(row["地区"])
+            province = diqu.get("province")
+            city = diqu.get("city")
+        except Exception as e:
+            pass
+
+        if not province:
+
+            try:
+                diqu = jionlp.parse_location(website_data["地区"])
+                province = diqu.get("province")
+                city = diqu.get("city")
+            except Exception as e:
+                pass
+
+        if not province:
+
+            try:
+                diqu = jionlp.parse_location(assets_name)
+                province = diqu.get("province")
+                city = diqu.get("city")
+            except Exception as e:
+                pass
+
+        if not province:
+            province = "四川省"
+
+        if not city:
+            city = "成都市"
+
+        county = diqu.get("county")
+
+        # 拍卖类型
+        # assets_type: str
+        assets_type = None
+
+        # 关注数
+        onlookers = None
+        try:
+            string = row["关注数"].replace(" ", "").replace("\n", "").replace("\t", "").replace("\r", "")
+            # 使用正则表达式提取所有的数字
+            onlookerss = re.findall(r'\d+', string)
+            onlookers = ''.join(f'{num}' for num in onlookerss)
+
+        except Exception:
+            onlookers = ""
+            # print('关注数出错')
+
+        # 拍卖链接
+        # url: str
+        url = row["页面网址"]
+
+        # 解析详细信息，入库用
+        auction_info = Auction_Info(
+            origin_id=origin_id,
+            auction_id=auction_id,
+            assets_name=assets_name,
+            announcement_start_time=str_to_y_m_d_H_M_S(announcement_start_time),
+            announcement_end_time=str_to_y_m_d_H_M_S(announcement_end_time),
+            deposit=deposit,
+            img_url=img_url,
+            img_paths=img_paths,
+            province=province,
+            city=city,
+            county=county,
+            website=self.website,
+            state=state,
+            onlookers=onlookers,
+            assets_type=assets_type,
+            url=url
+        )
+
+        return auction_info
+
+    # 解析详情页
+    def parse_data_details(self, *args, **kwargs):
+        row = kwargs.get("row")
+        auction_info = kwargs.get("auction_info")
+
+        detials = []
+        for field_name in row:
+
+            if not row[field_name]:
+                continue
+
+            if "x" in field_name:
+                detial = {
+                    "title": field_name,
+                    "content": row[field_name]
+                }
+
+                detials.append(detial)
+
+        if len(detials) == 1:
+            for field_name in row:
+
+                if "x" in field_name:
+                    detials = row[field_name]
+
+        if len(detials) == 0:
+            a = 1
+            b = 0
+
+            return a, b
+
+        return auction_info, Auction_Detials(state=auction_info.state,
+                                             url=auction_info.url, detials=detials)
+
+    def action(self, *args, **kwargs):
+
+        from datetime import datetime
+
+        # 获取当前时间
+        current_time = datetime.now()
+        # 格式化当前时间
+        formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
+        logtool.info(f"当前时间：f{formatted_time}")
+
+        # 获取域名，数据信息
+        websites = self.select_mysql_datas("datas", "websites")
+
+        # 获取所有数据给判断判重用
+        datas = self.select_mysql_datas(database_name="ruseinfo_uat", table_name='auction_info')
+
+        # 获取分类数据
+        mysql_classification = self.select_mysql_datas(database_name='datas', table_name='categories')
+
+        # 获取临时数据库中的数据
+        mysql_datas = self.select_mysql_datas(database_name='datas', table_name='temporary_datas')
+
+        # 遍历域名
+        for i, website in enumerate(websites):
+
+            self.website = website["域名"]
+
+            # 数据入库成功：n 没有标题：m  数据重复：s  详情页为空：x  失败：b
+
+            n = 0
+            m = 0
+            s = 0
+            x = 0
+            b = 0
+            p = 0
+            time_fail = 0
+
+            # 判断是否上线
+            if not website["域名"]:
+                continue
+
+            # 遍历数据
+            for row in mysql_datas:  # 取表格每行
+
+                # 判断域名表的域名是否和了临时数据库中的域名一样
+                if website["域名"] != row["website"]:
+                    continue
+
+                # 处理列表信息
+                try:
+
+                    auction_info = self.parse_data_list(row=json.loads(row["datas"]),
+                                                        website_data=website)
+
+                except Exception as e:
+
+                    b += 1
+
+                    continue
+
+                # 判断标题是否有问题
+                if auction_info == 0:
+                    m += 1
+
+                    continue
+
+                # 处理详情页
+                try:
+
+                    # 处理详情页的数据，html
+                    # row = handle(website=self.website, row=json.loads(row))
+
+                    auction_info, auction_detial = self.parse_data_details(row=json.loads(row["datas"]),
+                                                                           auction_info=auction_info, )
+
+                except Exception as e:
+
+                    p += 1
+
+                    continue
+
+                # 判断详情页是否为空
+                if auction_info == 1:
+                    x += 1
+
+                    continue
+
+                # 去重
+
+                start_time = datetime.strptime(auction_info.announcement_start_time, "%Y-%m-%d %H:%M:%S").replace(
+                    hour=0, minute=0, second=0)
+                end_time = datetime.strptime(auction_info.announcement_end_time, "%Y-%m-%d %H:%M:%S").replace(hour=0,
+                                                                                                              minute=0,
+                                                                                                              second=0)
+
+                try:
+                    if 1 in [1 if i["assets_name"] == auction_info.assets_name and (
+                            start_time == i["announcement_start_time"].replace(hour=0, minute=0, second=0)
+                            or
+                            end_time == i["announcement_end_time"].replace(hour=0, minute=0, second=0)
+                    ) else 0 for i in datas]:
+                        s += 1
+
+                        continue
+                except Exception as e:
+                    time_fail += 1
+                    continue
+
+                # if self.mysql_query(assets_name=auction_info.assets_name,
+                #                     announcement_start_time=auction_info.announcement_start_time):
+                #     s += 1
+                #
+                #     continue
+                #
+                # if self.mysql_query(assets_name=auction_info.assets_name,
+                #                     announcement_end_time=auction_info.announcement_end_time):
+                #     s += 1
+                #
+                #     continue
+
+                # 筛选分类
+
+                auction_info.assets_type = "其它"
+                for haha in mysql_classification:
+                    # 判断需要的筛选词是否为空
+                    if not haha["category_name"]:
+                        continue
+
+                    # 判断需要的筛选词是否为空
+                    if not haha["filter_word"]:
+                        continue
+
+                    # 移除列表中的空格
+                    words_list = [word for word in haha["filter_word"].split(',') if word != '']
+
+                    # 筛选不要的
+                    if haha["not_filter_word"]:
+                        # 移除列表中的空格
+                        words_list1 = [word1 for word1 in haha["not_filter_word"].split(',') if word1 != '']
+
+                        if any(i in auction_info.assets_name for i in words_list1):
+                            continue
+
+                    if any(i in auction_info.assets_name for i in words_list):
+                        auction_info.assets_type = haha["category_name"]
+
+                        break
+
+                # 删除暂时数据库中的数据
+                self.delete_mysql_datas(id=row["id"])
+
+                # 入库
+                id = self.insert_one_auction_info(auction_info.to_json())
+                auction_detial.id = id
+                self.insert_one_auction_detail(auction_detial.to_json())
+
+                n += 1
+
+            logtool.info(
+                f'\n---------域名：{i, self.website}，数据入库成功：{n}，列表页解析失败：{b}，时间问题：{time_fail}，详情页解析失败：{p}，没有标题：{m}，数据重复：{s}，详情页为空：{x}，')
+
+
 if __name__ == '__main__':
+    wk = Wk()
 
-    # 数据库连接配置
-    config = {
-        'host': '118.195.246.81',
-        'port': 3406,
-        'user': 'root',
-        'password': 'ruse#@!2022r',
-        'db': 'datas',
-        'charset': 'utf8mb4'
-    }
-
-    # 连接到数据库
-    connection = pymysql.connect(**config)
-
-    try:
-        # 使用cursor()方法创建一个游标对象，用于执行SQL语句
-        with connection.cursor() as cursor:
-            # 定义SQL查询语句
-            a = {'结束时间': '开始时间:12月21日 11:00', '页面网址': 'https://paimai.jd.com/303265894', '地区': '福州市',
-                 '详情页标题': '现代Santa Fe/胜达(进口) 2010款 2.4 手自一体 7座', '保证金': '保证金：¥500',
-                 'x详情页物介绍': '<div class="panel-content">\n                  <div class="article">\n                    <h3>一、保证金的交纳：</h3>\n                    <p>\n                      <span>保证金是竞拍人参加竞拍的凭证，如竞拍人有意参加相关标的物竞拍活动，则须交纳资产处置主体设置的参与竞拍标的物所对应的保证金。每参加一笔竞价交易，则需要根据标的物页面提示的保证金金额交纳一笔保证金。竞拍人通过点击要参拍的标的物页面中“交保证金报名”按钮，使用网银在线支付保证金，（注：所使用的网银银行限额需要高于要交纳的保证金金额），具体各银行网银限额标准请参看（因各银行限额有所不同，此限额标准仅供参考，具体支付限额请咨询相关银行，限额额度以各银行发布限额为准。）</span>\n                    </p>\n                  </div>\n                  <div class="article">\n                    <h3>二、保证金的处理：</h3>\n                    <p><span>1.保证金的返还</span></p>\n                    <p><span>以下两种情况下，将原路退还竞拍人保证金：</span></p>\n                    <p><span>1）竞拍人未成功竞拍拍品；</span></p>\n                    <p>\n                      <span>2）竞拍人竞拍成功后，资产处置主体主动关闭交易或未履约发货或因资产处置主体其他原因导致交易未完成的。</span>\n                    </p>\n                    <p><span>2.保证金的扣除</span></p>\n                    <p>\n                      <span>竞拍人应按照竞拍规则及资产处置主体设置的保证金金额交纳保证金，竞拍人未按规定提交企业资质、企业授权委托书、特殊资质证明、个人身份信息等，或所提交的上述资料不真实、不完善、出现错误，或竞拍成功后未按照规定的时间完成付款（成交款和佣金）的，系统将直接扣除竞拍人交纳的保证金作为违约金用于赔付资产处置主体，竞拍人可与资产处置主体协商出具相应凭据，但京东无需就代为扣除的保证金给竞拍人或资产处置主体开具发票或收据等相关凭证。</span>\n                    </p>\n                    <p><span>3.保证金冲抵成交款</span></p>\n                    <p>\n                      <span>竞拍人竞拍成功后，保证金自动冲抵部分成交款。</span>\n                    </p>\n                  </div>\n                  <div class="article">\n                    <h3>三、违约责任：</h3>\n                    <p>\n                      1.竞拍人竞拍成功并完成成交款支付后，如因资产处置主体原因出现了“成交不卖”的违规行为，包括但不限于关闭交易或未履约发货，资产处置主体应为竞拍人办理退款，退款及法律责任的追究，由资产处置主体线下与竞拍人自行联系完成。所涉款项不通过京东平台支付，京东平台亦不对此承担任何义务与法律责任。\n                    </p>\n                    <p>\n                      2.在资产处置主体非竞拍标的物产权人的情况下，竞拍人竞拍成功并完成成交款支付后，如因产权人原因或其他第三方原因导致交易未完成的，包括但不限于无法向用户交付拍品或过户，资产处置主体应为竞拍人办理退款，退款及法律责任的追究，由资产处置主体、产权人线下与竞拍人自行联系完成。所涉款项不通过京东平台支付，京东平台亦不对此承担任何义务与法律责任。但在此种情况下，资产处置主体将不承担违约金和其他赔偿。\n                    </p>\n                  </div>\n                </div>',
-                 'x竞买公告': '<div id="bid-announce-content"><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司定于在</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">网资产竞价网络平台上进行公开竞价活动（户名：福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司），公开竞价资产处置车辆，现公告如下：</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><strong><span style="font-family: 微软雅黑;color: rgb(255, 0, 0);letter-spacing: 0;font-size: 16px"><span style="font-family:微软雅黑">车辆里程数以交付车辆时实际里程数为准，本公司为拍卖公司，没有二手车评估资质，不能对车辆改表进行鉴定，不能保证此车未调过表，需要竞买人现场实际审核查看。此车仪表显示里程数，有可能会与</span>&nbsp;4S&nbsp;店保养记录里程数不符，</span></strong><strong><span style="font-family: PingFangSC-Regular;color: rgb(255, 0, 0);letter-spacing: 0;font-size: 16px">本公司不负任何责任。强烈建议竞买人提前线下看样，并仔细审阅第三方检测报告，谨慎参拍！</span></strong></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"></span></p><p style="margin-top:0;margin-right:0;margin-bottom:10px;padding:0 0 0 0 ;text-autospace:ideograph-numeric;line-height:150%"><strong><span style="font-family: 等线;color: rgb(255, 0, 0);letter-spacing: 0;font-size: 16px">温馨提示：</span></strong></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">1</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">、</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">本标的，竞拍成功后需在</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:PingFangSC-Regular">三小时内支付平台技术服务费</span></span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">2</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">、</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:PingFangSC-Regular">买受人必须在</span><span style="font-family:PingFangSC-Regular">3个自然日内付清余款，到车辆所在地办理车辆成交确认手续。</span></span></p><p><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">3、买受人必须在5个自然日内缴纳5000元过户保证金，过户完成之后退回。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><br></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">一、本次网络竞价报名及竞价网址登录（电脑与手机均可参与）</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">二、竞价标的：福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司资产处置车辆（可过户），所有标的物车辆均不含车牌及指标。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">我司提供代办过户服务，全程陪同买受人处理过户事宜，包括资料填写，手续整理等。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">三、竞买人应具备的条件：具有完全有民事行为能力和支付能力的自然人或中国境内合法存续的法人或其他组织均可参加竞买。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">四、咨询、看样展示的时间：自公告之日起至拍品结束前接受咨询</span>,预约看样（节假日不休息），有意者请与</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">工作人员</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">联系。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">五、本次竞价活动设置延时出价功能，在竞价活动结束前，每最后</span>5分钟如果有竞买人出价，将自动延迟5分钟。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">六、本次竞价以增价方式竞价，不设保留价的，只要出价如无更高出价即可成交，详见标的页面有明示。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">七、特别提醒：</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">1、竞价标的以现状为准（实物现状和权属现状），福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">与委托方不承担该标的的瑕疵保证</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">。</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">此车有修复痕迹（包括但不限于划痕、喷漆及表面件更换、内饰件更换）。本公司不能排除此车是重大事故车、水淹车、火烧车、调表车，有意向者请务必亲自实地看样，务必亲自了解和查验</span>4S店保养和维修记录及保险公司理赔记录，未看样的竞买人视为对该标的实物现状的确认，责任自负。请慎重决定竞买行为，竞买人一旦作出竞买决定，即表明已完全了解，并接受标的物的现状和一切已知及未知的瑕疵。一旦竞买成功，不得以有关车况的任何问题向本公司要求退车、退保证金或者任何赔偿。竞价标的可能还存在尚未被发现及未说明的瑕疵（包括但不限于汽车配件及随车工具丢失、车辆能否正常启动、是否有二次事故），竞买人应亲自了解和查验（包括4S店保养和维修记录、保险公司理赔记录）。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">2、本公司已委托第三方机构根据国家标准（GB/T30323-2013）对车辆现状进行评估检测（检测报告详见标的展示页面中的附件），检测内容仅对车辆是否为水泡、火烧、重大事故情况作出鉴定，其他车辆瑕疵，包括并不局限于外观件更换、划痕、喷漆、钣金修复等情况不在检测范围内，以实际车况为准，强烈建议竞买人提前线下看样。对于第三方检测机构无法检测的车辆，本公司仅对车辆有无重大事故、水泡、火烧情况进行初步检测，具体车况以竞买人实际看样为主，强烈建议竞买人提前线下看样，谨慎参拍。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">3、福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司为拍卖公司，仅对标的车辆是否存在抵押、债权等影响交易过户的相关法律风险做评估，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司已在竞买人参与竞拍时告知竞买人标的车辆车况以现场看样为准，如标的车辆存在车辆发生的重大事故情况、车架及车身主要立柱发生过的变形或修复情况、车架号或发动机有变更以及火烧或水泡涉水的情况、影响车辆外检的车辆改装情况；竞买人需自行与当地车管所确认车辆是否存在无法提档落户情况；买受人需自行承担后续产生费用。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">4、买受人交清成交款项后的7日内，买受人需到车管部门办理车辆过户手续，涉及车辆维修、年检、过户等相关手续及费用由买受人承担。</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">因买受人原因导致车辆过户逾期</span>7日未过户，视为违约</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">5、标的车辆具体受损和丢失部位以实物为准，缺失部件已无法追回的，我公司不承担质量保证和瑕疵担保责任。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">6、如竞价标的车辆交强险过期，买家自行承担。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">7、如有二次事故，本拍卖公司及委托方不承担责任。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">8、违章由原车主承担，过户前处理完毕。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">9、竞买人在竞拍前需要自行评估、尽职调查，自行判断是否符合受让本项目资格。因未详细调查和评估或因不符合条件参加竞买的，由竞买人自行承担相应的法律责任，并自行承担由此产生的全部责任及后果，包括但不限于费用、风险和损失。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">10、标的物的优先购买权人未参加竞价，视为放弃优先购买权。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">11、车辆自身或车辆手续如遇到不能合法进行过户的情况（查封、纠纷案件、车辆档案信息不符、发动机号码问题且不能合法变更、车架号码有问题且不能合法变更等），福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司将向买受人提供全款退车；如买受人因此遭受损失，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司可协助买受人向委托方追责</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">12、下述项目不予检测，且福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司不接受以下项目导致的争议。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">1) &nbsp;车辆非核心配件的原、副厂属性及修复历史（例：车身外观所有覆盖件）。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">2) &nbsp;车辆配置是否原车还是后期加装属性即为是否为原厂件无法核实。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">3) &nbsp;车辆玻璃及天窗玻璃，只表述当前状况，不做是否为原车配件检测。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">4) &nbsp;车辆公里数只记录当前仪表显示里程，不做实际行驶里程检测。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">5) &nbsp;车辆刹车盘、刹车片、地胶、脚垫、消音器、燃油表、水温表。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">6) &nbsp;车辆可抛光去除的所有损伤。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">7) &nbsp;车辆自身缺陷导致厂家召回。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">13、买受人应在确认车况及手续的情况下完成付款，一旦买受人完成付款，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">将不再接受买受人对车况及手续问题的任何争议和由此提出的退车请求。</span>(因委托方手续问题导致无法过户的情况除外）</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">14、标的车辆排放标准依据车辆当前户籍所在地标准执行，不接受除当前户籍所在地外其他区域查询结果差异导致的争议。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">15、车辆成交后，新增损伤及发生故障车辆，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司将与买受人沟通协商处理。关于赔付、修理等方案，参照本市二类修理厂修复价格或由福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司指定修理厂修复，由委托方从承担费用，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司不承担此项责任。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">16、车辆因不可抗拒因素（包括各地区政策、车管所等原因）导致车辆交易延时或终止等情况，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司不承担责任。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">17、车辆在启动过户手续后因买受人单方面违约，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司将自保证金中额外扣除车辆在过户过程中新增及重复产生的费用。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">八、竞价标的登记、过户手续由买受人自行办理（委托人予以协助），所涉及的过（入）户税、费均由买受人承担。本次竞价采用网络竞价，保证金在网上报名时自动冻结，线下不收取保证金。竞价竞价前</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">系统将冻结竞买人</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">账户内的资金作为应缴的保证金，竞价结束后未能竞得者冻结的保证金自动解冻，冻结期间不计利息。不会</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">操作者，可以委托精通</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">购物的亲朋好友代为竞买，同样具备法律效力。本次竞价没有报名人数限制，亦没有报名时间的限制，在每个标的竞价结束之前，均可以报名参拍。本标的物竞得者原冻结的保证金自动转入福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">账户，</span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;color: rgb(192, 0, 0);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">车辆综合服务费￥</span><span style="font-family:微软雅黑">3000.00圆整、竞价余款</span></span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;color: rgb(192, 0, 0);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">、</span></span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;color: rgb(192, 0, 0);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">竞价余款在竞价成交后</span>3日之内付清</span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">。付清余款后，请在</span>&nbsp;</span></span><span style="text-decoration:underline;"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:PingFangSC-Regular">3&nbsp;日内凭有效身份证明前往标的物所在地办理提车事宜。买受人提车前务必联系福建</span></span></span><span style="text-decoration:underline;"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:PingFangSC-Regular">驰蓝实业</span></span></span><span style="text-decoration:underline;"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:PingFangSC-Regular">有限公司工作人员。对于标的物车牌所属地与车辆暂存地不在同一个地区的，需买受人</span></span></span><span style="text-decoration:underline;"><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">缴纳过户押金</span>5000</span></span><span style="text-decoration:underline;"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:PingFangSC-Regular">，待车辆提档或过户完毕后返还。</span></span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">竞价未成交的，竞买人冻结的保证金自动解冻，冻结期间不计利息。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">九、竞价因标的本身价值，其起拍价、保证金相对较高的；竞买人参与竞拍，支付保证金可能会碰到当天限额无法支付的情况，请竞买人根据自身情况选择网上充值银行。竞买人在竞价竞价前请务必再仔细阅读本公司发布的竞价须知。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;十、所有竞拍车辆除标的物所在地会根据资产处置方移动外，可能存在展示表显里程与实际交付时表显里程不一致的情况，请务必须知，其余一切手续正规合法，证件齐全，如需实地看车，请电话咨询，提前预约。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 16px">&nbsp;</span></p><p style="margin-top:0;margin-right:40px;margin-bottom:10px;margin-left:0;text-indent:0;padding:0 0 0 0 ;line-height:24px"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;</span></p><p style="margin-top:0;margin-right:40px;margin-bottom:10px;margin-left:0;text-indent:0;padding:0 0 0 0 ;line-height:24px"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;</span></p><p style="margin-top:0;margin-right:40px;margin-bottom:10px;margin-left:0;text-indent:0;padding:0 0 0 0 ;line-height:24px"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;咨询电话</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">：</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">林</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">经理：</span>13328237727</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><strong><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 16px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></strong></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 ;text-align:right"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司</span></p><p><span style=";font-family:Calibri;font-size:14px">&nbsp;</span></p></div>',
-                 'x竞买须知': '<div id="bid-notice-content"><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:28px;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司在</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">网资产竞价网络平台上进行资产处置车辆公开竞价活动，现就有关的网上竞价事宜敬告各位竞买人：</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">一、本《竞价须知》根据《中华人民共和国竞价法》及相关法律规定制订，竞买人应认真仔细阅读，了解本须知的全部内容。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">二、各竞买方在竞价前须详细阅读此《竞买须知》。本次竞价活动遵循</span><span style="font-family:微软雅黑">“公开、公平、公正、诚实守信”的原则，竞价活动具备法律效力。参加本次竞价活动的当事人和竞买人必须遵守本须知的各项条款，并对自己的行为承担法律责任。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">三、车辆品牌</span></span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">：</span></span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">现代</span></span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">，车架号：见车辆铭牌，发动机号：见车辆铭牌。发票事宜由各竞买人自行向税务主管部门咨询、了解，车辆过户后相关部门会出具一份二手车销售统一发票，买受人自行保存。</span>&nbsp;&nbsp;&nbsp;&nbsp;</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">四、凡具备完全民事行为能力和支付能力的自然人和合法存续的法人、社会组织、团体均可参加竞买。不符合条件参加竞买的，竞买人自行承担相应的法律责任。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">五、本次竞价活动设置延时出价功能，在竞价活动结束前，每最后</span>5分钟如果有竞买人出价，就自动延迟5分钟。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">六、竞拍前竞买人的</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">账户中应有足够的余额支付竞价保证金。竞买人在对竞价标的第一次确认出价竞拍前，按</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">系统提示报名缴纳保证金，系统会自动冻结该笔款项。竞价成交的，本标的竞得者（以下称买受人）冻结的保证金将自动转入福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司指定账户，其他竞买人的保证金在竞价后即时解冻。竞价未成交的（即流拍的），竞买人的保证金在竞价活动结束后即时解冻，保证金冻结期间不计利息。如遇保证金交付问题请咨询</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">网。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">七、本次竞价经法定的公告期和展示期后举行的，该竞价标的如有违章则由原车主在买受人过户前处理，请竞买人自行到相关主管部门查询和了解，竞价标的可能还存在尚未被发现及未说明的瑕疵，买受人应当亲自了解和查验，并自行承担竞价标的物存在尚未被发现及其它未知瑕疵的风险。竞价人对竞价标的物所作的说明和提供的图片（包括但不限于车辆情况表及参数表等），仅供竞买人参考，不构成对该标的的任何担保。请竞买人在竞价前必须亲自到展示现场看样，认真仔细查看标的的实际情况，未看样的竞买人视为对本标的实物现状的确认，慎重决定竞买行为，竞买人一旦作出竞买决定，即表明已完全了解，并接受标的的现状和一切已知及未知的瑕疵。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">八、竞价前</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">系统将冻结竞买人</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">账户内的资金作为应缴的保证金，线下不收取保证金，竞价结束后未能竞得者冻结的保证金自动解冻，冻结期间不计利息。不会</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">操作者，可以委托精通</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">京东</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">购物的亲朋好友代为竞买。本次竞价没有报名人数限制，亦没有报名时间的限制，在每个标的竞价结束之前，均可以报名参拍。本标的物竞得者原冻结的保证金自动转入福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司指定账户，</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">竞价余款在竞价成交后</span>3日之内</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">付清</span></span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">，付清余款后，请在</span>7日内凭有效身份证明前往标的物所在地办理提车事宜。买受人提车前务必联系福建驰蓝实业有限公司工作人员。</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">为保证买受人利益，我司所有车辆在买受人提车当日由我司工作人员全程陪同过户，如当日无法完成过（入）户，车辆需停放至我司保全场地进行保全，直至车辆完成过（入）户。标的物车牌归属地和标的物停放地为不同地区的车辆我司收取买受人</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)">5000元</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">保证金后，买受人超过约定时间拒不过户的，我司将每日扣除过户保证金的百分之十，扣完过户保证金还未完成过户的，我司将和买受人解除协议和约定，用司法手段收回车牌和指标，并追偿买受人不过户产生的其他费用</span>.过户时间为：提车之后7个工作日如有特殊原因可延长3个工作日。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">九、买受人付清余款后</span>7个工作日内凭本人有效身份证明、交款凭证前往标的物所在地办理提车事宜。逾期不缴纳尾款的买受人，将视为买受人放弃该标的物，保证金将全额划扣，保留追究其产生其他法律后果的权利并有权对本标的物另行处置。买受人自行办理车辆过户手续，逾期不办理的，买受人应支付由此所产生的费用，并承担该标的可能发生的损毁、灭失等后果。本次车辆以现状竞价和交付，买受人提车后即为车辆所有人，无论过户与否，都将承担与车辆有关的一切法律责任。买受人提车后，所发生的一切交通事故、交通违章、车辆损失及其他责任均由买受人承担，与原车主及竞价公司无关。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十、买受人需在</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">竞价成交交清余款后</span>7日内必须完成提车过户</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">，如在规定日期内无法完成过户，本公司将视受买人违约，我司将在买受人完成车辆过户后的三个工作日内返还其过户保证金）。对于标的物车牌归属地和标的物停放地为不同地区的车辆，我司将在买受人提车之时收取其过户保证金</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)">5000元</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">，并在买受人完成车辆过户后的三个工作日内返还其过户保证金。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px;background: rgb(255, 255, 0)"><span style="font-family:微软雅黑">十一、本次竞价设有佣金，竞价佣金按车辆成交价的</span>5%收取。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十二、竞价成交后，本公司只向买受人开具竞价佣金发票</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十三、买受人逾期未支付竞价成交价款和竞价佣金，将视为违约，竞价标的将收回，竞买保证金不予退还。重新竞价时，原买受人不得参加竞买。再行竞价的有关事宜按《中华人民共和国竞价法》规定执行。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十四、本次竞价活动计价货币为人民币。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十五、参加竞买的人应当遵守竞价须知的规定，不得阻挠其他竞买人竞拍，不得操纵、垄断竞拍价格，严禁竞买人恶意串标，上述行为一经发现，将取消其竞买资格，并追究相关的法律责任。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十六、福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司根据法律规定有权在竞价开始前中止竞价或撤回竞价。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十七、竞价成功后买受人未按有关规定履行相关手续时，买受人将承担违约责任并无权要求返还竞价保证金。买受人逾期未支付竞价款或明确表示反悔的，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司有权扣收保证金，重新竞价。重新竞价时，原买受人不得参加竞买。重新竞价的价款低于原竞价价款造成的差价、费用损失，由原买受人承担。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十八、合格竞买方参与本次竞价会，视同对竞价标的已进行过尽职调查，且知悉竞价标的所公开披露的全部信息及其可能存在的瑕疵。由此所产生的纠纷福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司均不承担任何法律责任和赔偿义务。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">十九、由于各地车辆管理部门对车辆过户入籍有不同规定，请买受人提前自行详细了解当地的车辆管理政策、限购政策和环保政策等规定。本次竞价不负责相关信息的核实确认。因转入地车辆管理所不接收而造成的一切损失，均由买受人承担，竞价机构不会因此予以退款和退车。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">二十、福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司作为委托方和买受人的中介人，只为买卖双方提供服务，但对卖方和买方的任何违约行为概不承担任何责任；福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司作为委托方的受托人，对交易过程中和交易后所产生的一切法律后果均由委托方承担。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">二十一、资产转让过程中出现下列情形的，福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司可以要求转让方立即中止或者终结资产转让活动，同时福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">有权直接做出资产转让活动中止和终结的决定：（</span>1）存在违反国家法律法规或其他有关方提出争议情形时；（2）资产转让申请提交竞价人后，未实际在</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司</span><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">履行交易程序的；（</span>3）在资产交易过程中出现违反各项交易规则、细则等相关规定，并妨碍正常交易秩序的；（4）交易双方及相关主体因纠纷争讼，由仲裁机构（或法院）做出中止和终结决定的。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">二十二、在竞拍成功后交接过程中产生纠纷的，先进行协商，协商不成的，务必在一个月内起诉至福州市当地法院。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: 微软雅黑;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px"><span style="font-family:微软雅黑">二十三、我司无法确认此车的</span>4S店维保记录；如有需要者，请自行查询（车架号详情见行驶证、登记证书）</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">本竞价须知由福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司负责解释。</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">（本地过（入）户可以代办，费用自理；所有标的均不包邮，建议自提，若需要物流或送车，请联系客服人员，费用自理。）</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 "><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;padding:0 0 0 0 ;text-align:right"><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;福建</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">驰蓝实业</span><span style="font-family: PingFangSC-Regular;color: rgb(102, 102, 102);letter-spacing: 0;font-size: 14px">有限公司</span></p></div>',
-                 'x尾款支付说明': '<div class="subpanel-content">\n                      <div id="addition-desc-file">附件下载：<br><a onclick="bindSendInfoLog(\'auction_detail|AuctionDetail_Attachment\',\'详情_相关附件\',\'\')" href="https://storage.jd.com/auction.gateway/ATTACHMENT_9ba238b0d53e42808236c1ba1cb98bc0.pdf">检测报告-现代 新胜达（进口）.pdf</a><br></div>\n                      <div id="addition-desc-video"><iframe width="750" height="422" scrolling="no" id="pframe" style="display:block;margin:0 auto;" allowscriptaccess="always" wmode="opaque" allowtransparency="true" frameborder="0" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" msallowfullscreen="true" src="//newbuz.360buyimg.com/video/4.5/jdvideo.html?autoplay=false&amp;fuScrnEnabled=true&amp;playbackRateEnabled=true&amp;fileid=f5ea5dff-ab37-4196-8dae-c90e859af0b7&amp;appid=1251412368&amp;sw=1280&amp;sh=720"></iframe></div>\n                      <br>\n                      <div id="addition-desc-content"><p style="margin-bottom:10px;margin-left:0;text-autospace:ideograph-numeric;line-height:150%"><span style=";font-family:等线;line-height:150%;font-size:16px">本次竞拍为业主委托正常拍卖，不涉及任何债权债务纠纷及民、刑事纠纷。</span></p><p style="margin-bottom:10px;margin-left:0;text-autospace:ideograph-numeric;line-height:150%"><span style=";font-family:等线;line-height:150%;font-size:16px">咨询电话：林</span><span style=";font-family:等线;line-height:150%;font-size:16px">老师</span><span style=";font-family:等线;line-height:150%;font-size:16px">13328237727 （微信同号）</span></p><p><img src="//img30.360buyimg.com/imgw/jfs/t1/243829/38/90/12498/65830a6bF5aac8b2a/5425a921baaa6fcb.png" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/105490/10/45409/63665/65830ad8F72269304/dc3fcece40238ce1.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/239082/13/348/222031/65830a64Fee6e75f8/fee09fbec27c5a47.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/246074/25/45/234645/65830a65F8bf87b42/468de5e054335053.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/243191/36/91/238506/65830a65F0d2a8f2b/7e41fd5c00b8a5f4.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/232997/21/8976/292864/65830a66Fbf872a55/345f7a2f8d36c0bb.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/71418/27/24848/305860/65830a6aF26d0d22f/7f679492276de0f6.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/226570/33/9834/278141/65830a6bF0f6e9aeb/fb78fa1534ca51d5.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/234101/13/9254/279180/65830a6aFabaea38a/a4feb4104f2654c3.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/233138/6/8652/238008/65830a69F557072fb/b6695ce716c934dd.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/228312/36/9674/192503/65830a67Fb368d714/77b108a9ee45e27f.jpg" class="uploadimg"><img src="//img30.360buyimg.com/imgw/jfs/t1/240562/36/306/242385/65830a63Fe2ce34c2/4be980853382a878.jpg" class="uploadimg"></p></div>\n                    </div>'}
-
-            sql = f"INSERT INTO temporary_datas ( website, datas) VALUES ( 'John',{a} );"
-
-            # 执行SQL查询
-            cursor.execute(sql)
-
-            # 提交更改
-            connection.commit()
-
-            # # 使用fetchall()方法获取所有数据
-            # rows = cursor.fetchall()
-
-            # datas = []
-            # # 遍历结果集，将每行数据转换为字典，并打印字段名和对应的值
-            # for row in rows:
-            #     data_dict = dict(zip([column[0] for column in cursor.description], row))
-            #
-            #     datas.append(data_dict)
-
-    finally:
-        # 关闭数据库连接
-        connection.close()
-
-    # print(datas)
+    wk.action()

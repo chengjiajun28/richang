@@ -4,12 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="14f00801-ef26-4ceb-8b19-04285c39eeda" name="更改" comment="第一次备份">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="14f00801-ef26-4ceb-8b19-04285c39eeda" name="更改" comment="能把数据暂时存储在mysql数据库中，">
+      <change afterPath="$PROJECT_DIR$/ruseinfo/auction/cjj/img.png/3_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ruseinfo/auction/cjj/img.png/3_2.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/通过字段名取出数据库中的数据.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/通过字段名取出数据库中的数据.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruseinfo/auction/1.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/ruseinfo/auction/BaseCrawler.py" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/BaseCrawler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruseinfo/auction/cjj/cg_95306.py" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/cjj/cg_95306.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ruseinfo/auction/cjj/log/tornadoapi.log" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/cjj/log/tornadoapi.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruseinfo/auction/cjj/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/cjj/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruseinfo/auction/cjj/main1.py" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/cjj/main1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ruseinfo/auction/cjj/pmsearch_jd_jx.py" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/cjj/pmsearch_jd_jx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruseinfo/auction/cjj/sf_taobao.py" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/cjj/sf_taobao.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruseinfo/auction/log/tornadoapi.log" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/log/tornadoapi.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruseinfo/auction/log/tornadoapi.log.2023-11-10" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/ruseinfo/auction/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ruseinfo/auction/main2.py" beforeDir="false" afterPath="$PROJECT_DIR$/ruseinfo/auction/main2.py" afterDir="false" />
     </list>
@@ -67,7 +76,9 @@
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2XcWqaQ9ePlY7qdkcc8n1d7Qfjz" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -75,6 +86,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "DefaultHtmlFileTemplate": "HTML File",
     "Python.BaseCrawler.executor": "Run",
@@ -110,7 +122,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/27942/Desktop/python",
+    "last_opened_file_path": "C:/Users/27942/Desktop/python/ruseinfo/auction/cjj",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -127,11 +139,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\27942\Desktop\python\ruseinfo\auction\cjj" />
       <recent name="C:\Users\27942\Desktop\python" />
       <recent name="C:\Users\27942\Desktop\python\code" />
       <recent name="C:\Users\程家俊\Desktop\python\ruseinfo\auction\cjj" />
       <recent name="C:\Users\程家俊\Desktop\python\code" />
-      <recent name="C:\Users\程家俊\Desktop\python\模板\web\modules" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\程家俊\Desktop\python\ruseinfo\auction\cjj" />
@@ -141,53 +153,7 @@
       <recent name="C:\Users\程家俊\Desktop\python\zd" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main2">
-    <configuration name="BaseCrawler" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="python" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ruseinfo/auction" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ruseinfo/auction/BaseCrawler.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="aliJudicialSale" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="python" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/sf.taobao.com" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sf.taobao.com/aliJudicialSale.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.sf_taobao">
     <configuration name="修改google用户信息文件" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="python" />
       <option name="ENV_FILES" value="" />
@@ -203,6 +169,52 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="C:\Users\程家俊\Desktop\python\code\修改google用户信息文件.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="python" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ruseinfo/auction" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ruseinfo/auction/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="python" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ruseinfo/auction/cjj" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ruseinfo/auction/cjj/main1.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -257,7 +269,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="util" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="sf_taobao" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="python" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -266,12 +278,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/sf.taobao.com" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ruseinfo/auction/cjj" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sf.taobao.com/util.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ruseinfo/auction/cjj/sf_taobao.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -282,19 +294,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.修改google用户信息文件" />
-      <item itemvalue="Python.BaseCrawler" />
-      <item itemvalue="Python.aliJudicialSale" />
+      <item itemvalue="Python.main (1)" />
+      <item itemvalue="Python.main1" />
+      <item itemvalue="Python.sf_taobao" />
       <item itemvalue="Python.main2" />
-      <item itemvalue="Python.util" />
       <item itemvalue="Python.pmsearch_jd_jx" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main2" />
         <item itemvalue="Python.pmsearch_jd_jx" />
-        <item itemvalue="Python.BaseCrawler" />
-        <item itemvalue="Python.util" />
-        <item itemvalue="Python.aliJudicialSale" />
+        <item itemvalue="Python.sf_taobao" />
+        <item itemvalue="Python.main (1)" />
+        <item itemvalue="Python.main1" />
+        <item itemvalue="Python.main2" />
       </list>
     </recent_temporary>
   </component>
@@ -424,6 +436,7 @@
       <workItem from="1703122938005" duration="456000" />
       <workItem from="1703123395548" duration="275000" />
       <workItem from="1703123678403" duration="4760000" />
+      <workItem from="1703128467664" duration="19567000" />
     </task>
     <task id="LOCAL-00001" summary="第一次备份">
       <option name="closed" value="true" />
@@ -457,7 +470,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703124165761</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="能把数据暂时存储在mysql数据库中，">
+      <option name="closed" value="true" />
+      <created>1703128523912</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1703128523912</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -475,13 +496,15 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
     <MESSAGE value="第二次备份" />
     <MESSAGE value="测试：第三次备份&#10;删除大文件，是否能够提交成功" />
     <MESSAGE value="第一次备份" />
-    <option name="LAST_COMMIT_MESSAGE" value="第一次备份" />
+    <MESSAGE value="能把数据暂时存储在mysql数据库中，" />
+    <option name="LAST_COMMIT_MESSAGE" value="能把数据暂时存储在mysql数据库中，" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -495,14 +518,14 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/python$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1703126255026" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction" />
+    <SUITE FILE_PATH="coverage/python$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1703146811265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction" />
     <SUITE FILE_PATH="coverage/python$caa123_org_sf_qtjt.coverage" NAME="caa123_org_sf_qtjt 覆盖结果" MODIFIED="1700291097173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
-    <SUITE FILE_PATH="coverage/python$file_utils.coverage" NAME="file_utils 覆盖结果" MODIFIED="1702368606592" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
     <SUITE FILE_PATH="coverage/python$sf_taobao_jdc.coverage" NAME="sf_taobao_jdc 覆盖结果" MODIFIED="1700293229202" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
-    <SUITE FILE_PATH="coverage/python$main1.coverage" NAME="main1 覆盖结果" MODIFIED="1703065394442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
+    <SUITE FILE_PATH="coverage/python$file_utils.coverage" NAME="file_utils 覆盖结果" MODIFIED="1702368606592" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
+    <SUITE FILE_PATH="coverage/python$main1.coverage" NAME="main1 覆盖结果" MODIFIED="1703146170861" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
     <SUITE FILE_PATH="coverage/python$caa123_org_sf_jdc.coverage" NAME="caa123_org_sf_jdc 覆盖结果" MODIFIED="1700291082085" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$ejy365_cb.coverage" NAME="ejy365_cb 覆盖结果" MODIFIED="1700304034020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
-    <SUITE FILE_PATH="coverage/python$pmsearch_jd_jx.coverage" NAME="pmsearch_jd_jx 覆盖结果" MODIFIED="1703128106841" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
+    <SUITE FILE_PATH="coverage/python$pmsearch_jd_jx.coverage" NAME="pmsearch_jd_jx 覆盖结果" MODIFIED="1703147989234" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
     <SUITE FILE_PATH="coverage/python$app__2_.coverage" NAME="app (2) 覆盖结果" MODIFIED="1701357313575" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/模板" />
     <SUITE FILE_PATH="coverage/python$zc_cdaee_wl.coverage" NAME="zc_cdaee_wl 覆盖结果" MODIFIED="1700382754097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$norincogroup_ebuy_fj.coverage" NAME="norincogroup-ebuy_fj 覆盖结果" MODIFIED="1702447617060" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
@@ -532,8 +555,8 @@
     <SUITE FILE_PATH="coverage/python$zc_paimai_taobao_cl.coverage" NAME="zc-paimai_taobao_cl 覆盖结果" MODIFIED="1700297457564" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$xh_jwell56_jm.coverage" NAME="xh_jwell56_jm 覆盖结果" MODIFIED="1700312630699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$sf_taobao_cb.coverage" NAME="sf_taobao_cb 覆盖结果" MODIFIED="1700293716336" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
-    <SUITE FILE_PATH="coverage/python$cg_95306.coverage" NAME="cg_95306 覆盖结果" MODIFIED="1702637878020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
-    <SUITE FILE_PATH="coverage/python$main.coverage" NAME="main 覆盖结果" MODIFIED="1703070960571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
+    <SUITE FILE_PATH="coverage/python$cg_95306.coverage" NAME="cg_95306 覆盖结果" MODIFIED="1703129545774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
+    <SUITE FILE_PATH="coverage/python$main.coverage" NAME="main 覆盖结果" MODIFIED="1703134658399" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
     <SUITE FILE_PATH="coverage/python$tuopaishede.coverage" NAME="tuopaishede 覆盖结果" MODIFIED="1700134047017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$zc_taobao__1_.coverage" NAME="zc_taobao (1) 覆盖结果" MODIFIED="1702523366624" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
     <SUITE FILE_PATH="coverage/python$.coverage" NAME="通过字段名取出数据库中的数据 覆盖结果" MODIFIED="1703061413785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
@@ -541,7 +564,7 @@
     <SUITE FILE_PATH="coverage/python$haopaiwang_net_jm.coverage" NAME="haopaiwang_net_jm 覆盖结果" MODIFIED="1700378562636" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$epai_shop_jp.coverage" NAME="epai_shop_jp 覆盖结果" MODIFIED="1700362903598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$ouyeel_jj__1_.coverage" NAME="ouyeel_jj (1) 覆盖结果" MODIFIED="1700132269548" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
-    <SUITE FILE_PATH="coverage/python$sf_taobao.coverage" NAME="sf_taobao 覆盖结果" MODIFIED="1703122295597" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
+    <SUITE FILE_PATH="coverage/python$sf_taobao.coverage" NAME="sf_taobao 覆盖结果" MODIFIED="1703147972559" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj" />
     <SUITE FILE_PATH="coverage/python$caa123_org_pc_jdc.coverage" NAME="caa123_org_pc_jdc 覆盖结果" MODIFIED="1700291088546" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$zc_paimai_taobao_qtjt.coverage" NAME="zc-paimai_taobao_qtjt 覆盖结果" MODIFIED="1700297230930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$yqp_crrc.coverage" NAME="yqp_crrc 覆盖结果" MODIFIED="1700214031552" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction/cjj-code1" />
@@ -593,6 +616,6 @@
     <SUITE FILE_PATH="coverage/python$ejy365_sb.coverage" NAME="ejy365_sb 覆盖结果" MODIFIED="1700301991088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$yqp_index_jm.coverage" NAME="yqp-index_jm 覆盖结果" MODIFIED="1700318820495" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
     <SUITE FILE_PATH="coverage/python$crccep_zb.coverage" NAME="crccep_zb 覆盖结果" MODIFIED="1700579675293" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zd/main" />
-    <SUITE FILE_PATH="coverage/python$main2.coverage" NAME="main2 覆盖结果" MODIFIED="1703128372322" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction" />
+    <SUITE FILE_PATH="coverage/python$main2.coverage" NAME="main2 覆盖结果" MODIFIED="1703146038270" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruseinfo/auction" />
   </component>
 </project>

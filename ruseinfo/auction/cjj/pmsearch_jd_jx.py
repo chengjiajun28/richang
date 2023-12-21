@@ -139,10 +139,7 @@ class Wk(BaseCrawler):
         finally:
             page.quit()
 
-            # 将字典转换为JSON格式的字符串
-            json_data = json.dumps(i)
-
-            self.cache_mysql_datas(website=self.website, datas=json_data)
+            self.cache_mysql_datas(website=self.website, datas=i)
 
             self.zz_ruku_data.append(i)
 

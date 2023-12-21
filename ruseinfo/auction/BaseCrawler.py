@@ -68,7 +68,6 @@ class BaseCrawler(ABC):
             with connection.cursor() as cursor:
                 # 定义SQL查询语句
                 sql = "INSERT INTO temporary_datas ( website, datas) VALUES ( %s,%s);"
-                print(sql)
 
                 # 执行SQL查询
                 cursor.execute(sql, (website, json.dumps(datas),))
@@ -76,15 +75,35 @@ class BaseCrawler(ABC):
                 # 提交更改
                 connection.commit()
 
-                # # 使用fetchall()方法获取所有数据
-                # rows = cursor.fetchall()
+        finally:
+            # 关闭数据库连接
+            connection.close()
 
-                # datas = []
-                # # 遍历结果集，将每行数据转换为字典，并打印字段名和对应的值
-                # for row in rows:
-                #     data_dict = dict(zip([column[0] for column in cursor.description], row))
-                #
-                #     datas.append(data_dict)
+    def delete_mysql_datas(self, id):
+        # 数据库连接配置
+        config = {
+            'host': '118.195.246.81',
+            'port': 3406,
+            'user': 'root',
+            'password': 'ruse#@!2022r',
+            'db': 'datas',
+            'charset': 'utf8mb4'
+        }
+
+        # 连接到数据库
+        connection = pymysql.connect(**config)
+
+        try:
+            # 使用cursor()方法创建一个游标对象，用于执行SQL语句
+            with connection.cursor() as cursor:
+                # 定义SQL查询语句
+                sql = f"DELETE FROM temporary_datas WHERE id = {id};"
+
+                # 执行SQL查询
+                cursor.execute(sql, )
+
+                # 提交更改
+                connection.commit()
 
         finally:
             # 关闭数据库连接
@@ -96,9 +115,28 @@ class BaseCrawler(ABC):
         # page = ChromiumPage(addr_or_opts=do1)
 
         co1 = ChromiumOptions().auto_port()
-        page = ChromiumPage(addr_driver_opts=co1)
+        page = ChromiumPage(co1)
 
         return page
+
+    def init_page_user(self):
+        page = ChromiumPage()
+
+        return page
+
+    def get_page_user_obj(self, url, headers=None, cookies=None):
+        # 创建浏览器对象
+        page1 = self.init_page_user()
+
+        if headers:
+            page1.set.headers(headers=headers)
+
+        if cookies:
+            page1.set.cookies(cookies=cookies)
+
+        page1.get(url=url, interval=3)  # 获取网页
+
+        return page1
 
     def get_page_obj(self, url, headers=None, cookies=None):
         # 创建浏览器对象
@@ -236,26 +274,44 @@ class BaseCrawler(ABC):
 
         return result
 
-    def select_mysql_data(*args, **kwargs):
-        connection = pymysql.connect(
-            host='118.195.246.81',
-            port=3406,
-            user='root',
-            password='ruse#@!2022r',
-            database='ruseinfo_uat',
-        )
+    def select_mysql_datas(self, database_name, table_name):
+        # 数据库连接配置
+        config = {
+            'host': '118.195.246.81',
+            'port': 3406,
+            'user': 'root',
+            'password': 'ruse#@!2022r',
+            'db': f'{database_name}',
+            'charset': 'utf8mb4'
+        }
 
-        cursor = connection.cursor()
+        # 连接到数据库
+        connection = pymysql.connect(**config)
 
-        # 执行查询语句
-        sql = f"SELECT * FROM auction_info;"
-        cursor.execute(sql)
-        result = cursor.fetchall()
+        try:
+            # 使用cursor()方法创建一个游标对象，用于执行SQL语句
+            with connection.cursor() as cursor:
+                # 定义SQL查询语句
+                sql = f"SELECT * FROM {table_name}"
 
-        cursor.close()
-        connection.close()
+                # 执行SQL查询
+                cursor.execute(sql)
 
-        return result
+                # 使用fetchall()方法获取所有数据
+                rows = cursor.fetchall()
+
+                datas = []
+                # 遍历结果集，将每行数据转换为字典，并打印字段名和对应的值
+                for row in rows:
+                    data_dict = dict(zip([column[0] for column in cursor.description], row))
+
+                    datas.append(data_dict)
+
+        finally:
+            # 关闭数据库连接
+            connection.close()
+
+        return datas
 
     def select_mysql_classification(*args, **kwargs):
         connection = pymysql.connect(

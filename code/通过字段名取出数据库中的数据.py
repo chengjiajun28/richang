@@ -25,10 +25,13 @@ try:
         # 使用fetchall()方法获取所有数据
         rows = cursor.fetchall()
 
+        datas = []
         # 遍历结果集，将每行数据转换为字典，并打印字段名和对应的值
         for row in rows:
             data_dict = dict(zip([column[0] for column in cursor.description], row))
             print("Data:", data_dict)
+
+            datas.append(datas)
 
 finally:
     # 关闭数据库连接

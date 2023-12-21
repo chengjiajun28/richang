@@ -6,6 +6,7 @@ import requests
 
 from ruseinfo.auction import logtool
 from ruseinfo.auction.BaseCrawler import BaseCrawler
+from ruseinfo.auction.cjj.file_utils import orc_request, remove_path
 
 
 class Wk(BaseCrawler):
@@ -14,7 +15,7 @@ class Wk(BaseCrawler):
 
         self.cookies = {
             'AlteonPcgmh': '0a03b7f633d5867f1f41',
-            'wasteAreaValue': 'cd0127a0-1e56-440b-a341-23cfa53499c9',
+            'wasteAreaValue': '8c4745ca-ad90-4086-823c-c506ab6e9fb9',
         }
 
         self.headers = {
@@ -119,41 +120,84 @@ class Wk(BaseCrawler):
         return data
 
     def get_token(self, *args, **kwargs):
-        import requests
+        url = kwargs.get("url")
 
-        cookies = {
-            'wasteAreaValue': 'cd0127a0-1e56-440b-a341-23cfa53499c9',
-            'AlteonPcgmh': '0a03b7fa508ada1e1f41',
-        }
+        page = self.get_page_obj(url=url)
 
-        headers = {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-            'Connection': 'keep-alive',
-            # 'Cookie': 'wasteAreaValue=cd0127a0-1e56-440b-a341-23cfa53499c9; AlteonPcgmh=0a03b7fa508ada1e1f41',
-            'DNT': '1',
-            'Referer': 'https://cg.95306.cn/bfwz/',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
-            'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Microsoft Edge";v="120"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-        }
+        time.sleep(5)
+        try:
 
-        params = {
-            'picValidCodeKey': '1702366029801',
-            'picValidCode': 'B7C78',
-            'r': '1702366107394.4905',
-        }
+            # 处理图片验证码
+            img = page('x://*[@id="app"]/div/div[4]/div/div[2]/div/form/div/div[2]/img')
+            img.save('.\\img.png', '3.png')
 
-        response = requests.get(
-            'https://cg.95306.cn/proxy/portal/elasticSearch/checkRequestNumValidateCode',
-            params=params,
-            cookies=cookies,
-            headers=headers,
-        )
+            num = orc_request("img.png/3.png")
+
+            page.ele('x://*[@id="app"]/div/div[4]/div/div[2]/div/form/div/div[1]/div/div/div/input').input(num)
+
+            time.sleep(5)
+            page.ele('x://*[@id="app"]/div/div[4]/div/div[3]/span/button/span').click()
+
+            remove_path('img.png/3.png')
+
+
+        except Exception as e:
+            pass
+
+        cookies = page.get_cookies()[0]
+
+        page.quit()
+        return cookies
+
+    def get_1_cookies(self):
+        url = "https://cg.95306.cn/bfwz/#/announ?curIndex=2"
+
+        page = self.get_page_obj(url=url)
+
+        time.sleep(5)
+
+        # 处理图片验证码
+        img = page('x://*[@id="app"]/div/div[4]/div/div[2]/div/form/div/div[2]/img')
+        img.save('.\\img.png', '3.png')
+
+        num = orc_request("img.png/3.png")
+
+        page.ele('x://*[@id="app"]/div/div[4]/div/div[2]/div/form/div/div[1]/div/div/div/input').input(num)
+
+        time.sleep(5)
+        page.ele('x://*[@id="app"]/div/div[4]/div/div[3]/span/button/span').click()
+
+        remove_path('img.png/3.png')
+
+        while True:
+            try:
+
+                page.ele('x:/html/body/div[2]/div/div[3]/button/span').click()
+
+                time.sleep(5)
+                page.ele('x://*[@id="app"]/div/div[4]/div/div[2]/div/form/div/div[2]/img').click()
+
+                # 处理图片验证码
+                img = page('x://*[@id="app"]/div/div[4]/div/div[2]/div/form/div/div[2]/img')
+                img.save('.\\img.png', '3.png')
+
+                num = orc_request("img.png/3.png")
+
+                page.ele('x://*[@id="app"]/div/div[4]/div/div[2]/div/form/div/div[1]/div/div/div/input').input(num)
+
+                time.sleep(5)
+                page.ele('x://*[@id="app"]/div/div[4]/div/div[3]/span/button/span').click()
+
+                remove_path('img.png/3.png')
+
+            except Exception as e:
+                break
+
+        cookies = page.get_cookies()[0]
+
+        page.quit()
+
+        return cookies
 
     def action(self, *args, **kwargs):
         minpage = 0
@@ -171,10 +215,14 @@ class Wk(BaseCrawler):
         # 翻页
         for i in range(maxpage):
 
-            self.get_token()
+            try:
+                # 请求列表页
+                json_data = self.data_list(url=urls[0], page=i + 1)
+            except Exception as e:
+                self.cookies = self.get_1_cookies()
 
-            # 请求列表页
-            json_data = self.data_list(url=urls[0], page=i + 1)
+                # 请求列表页
+                json_data = self.data_list(url=urls[0], page=i + 1)
 
             # 解析列表页
             ids, datas = self.parse_data_list(json_data=json_data)
@@ -183,15 +231,23 @@ class Wk(BaseCrawler):
 
             # 循环列表
             for data, id in zip(datas, ids):
-                self.get_token()
 
-                # 请求详情页
-                data_json = self.data_details(id=id, headers=self.headers)
+                while True:
+                    try:
+                        # 请求详情页
+                        data_json = self.data_details(id=id, headers=self.headers)
 
-                time.sleep(random.randint(3, 10))
+                        time.sleep(random.randint(3, 10))
 
-                # 解析详情页
-                data = self.parse_data_details(data_json=data_json, data=data)
+                        # 解析详情页
+                        data = self.parse_data_details(data_json=data_json, data=data)
+
+                        break
+                    except Exception as e:
+
+                        cookies = self.get_token(url=data["页面网址"])
+
+                        self.cookies = cookies
 
                 ruku_data.append(data)
 
