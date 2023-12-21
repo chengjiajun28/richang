@@ -1,3 +1,4 @@
+import json
 import random
 import threading
 import time
@@ -138,6 +139,11 @@ class Wk(BaseCrawler):
         finally:
             page.quit()
 
+            # 将字典转换为JSON格式的字符串
+            json_data = json.dumps(i)
+
+            self.cache_mysql_datas(website=self.website, datas=json_data)
+
             self.zz_ruku_data.append(i)
 
     def get_cookie(self, *args, **kwargs):
@@ -165,7 +171,7 @@ class Wk(BaseCrawler):
 
     def action(self, *args, **kwargs):
         minpage = 0
-        maxpage = 80  # 写死20
+        maxpage = 2  # 写死20
 
         logtool.info("开始爬取")
         logtool.info("进入网页")
@@ -194,11 +200,13 @@ class Wk(BaseCrawler):
 
             print(f"第{_}条完成！！！")
 
-        # 将字典列表转换为DataFrame对象
-        df = pd.DataFrame(self.zz_ruku_data)
+            # self.cache_mysql_datas(website=self.website, datas=)
 
-        # 使用to_csv()方法覆盖原有文件的内容
-        df.to_csv(f"./csv/{self.website}.csv", index=False, encoding='utf-8')
+        # # 将字典列表转换为DataFrame对象
+        # df = pd.DataFrame(self.zz_ruku_data)
+        #
+        # # 使用to_csv()方法覆盖原有文件的内容
+        # df.to_csv(f"./csv/{self.website}.csv", index=False, encoding='utf-8')
 
 
 if __name__ == '__main__':
